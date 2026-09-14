@@ -54,6 +54,7 @@ $required = @(
     "Docs/Infinity UI/LICENSE",
     "Docs/Infinity UI/NOTICE.md",
     "Docs/Infinity UI/THIRD_PARTY_NOTICES.md",
+    "Docs/Infinity UI/licenses/InfinityUI-MIT.txt",
     "Docs/Infinity UI/licenses/CommonLibSSE-NG-GPL-3.0-or-later.txt",
     "Docs/Infinity UI/licenses/CommonLibSSE-NG-EXCEPTIONS.md"
 )

@@ -38,8 +38,9 @@ license handling.
 
 ## License
 
-The Infinity UI project source retains the original MIT license in `LICENSE`.
-Third-party components retain their own licenses. The tested binary is
-distributed with the CommonLibSSE-NG GPL-3.0-or-later license and exceptions
-because it was statically linked with a newer CommonLibSSE-NG build. See the
-`licenses` directory and `THIRD_PARTY_NOTICES.md`.
+This update is distributed under GPL-3.0-or-later as stated in `LICENSE`, with
+the applicable CommonLibSSE-NG exceptions preserved in
+`licenses/CommonLibSSE-NG-EXCEPTIONS.md`. The original Infinity UI source and
+copyright notice remain available under their original MIT terms in
+`licenses/InfinityUI-MIT.txt`. Third-party components retain their respective
+licenses; see `THIRD_PARTY_NOTICES.md`.

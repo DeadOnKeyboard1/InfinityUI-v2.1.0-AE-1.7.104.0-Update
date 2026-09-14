@@ -27,7 +27,8 @@ preserves the tested DLL while providing the relevant notices conservatively.
 
 | Component | License | Notice file |
 | --- | --- | --- |
-| Infinity UI | MIT | `LICENSE` |
+| Infinity UI update | GPL-3.0-or-later | `LICENSE` |
+| Original Infinity UI source | MIT | `licenses/InfinityUI-MIT.txt` |
 | CommonLibSSE-NG (tested binary) | GPL-3.0-or-later with exceptions | `licenses/CommonLibSSE-NG-GPL-3.0-or-later.txt`, `licenses/CommonLibSSE-NG-EXCEPTIONS.md` |
 | CommonLibSSE-NG (historical pinned source) | MIT | `licenses/CommonLibSSE-NG-MIT.txt` |
 | OpenVR | BSD-3-Clause | `licenses/OpenVR-BSD-3-Clause.txt` |
