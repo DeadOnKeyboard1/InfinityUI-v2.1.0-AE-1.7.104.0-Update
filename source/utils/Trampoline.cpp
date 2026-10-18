@@ -59,8 +59,8 @@ namespace hooks
 
 	std::pair<std::uintptr_t, std::size_t> SigScanner::GetModuleInfo(HMODULE a_moduleHandle)
 	{
-		MODULEINFO moduleInfo;
-		GetModuleInformation(GetCurrentProcess(), reinterpret_cast<HMODULE>(a_moduleHandle), &moduleInfo, sizeof(MODULEINFO));
+		MODULEINFO moduleInfo{};
+		if (!GetModuleInformation(GetCurrentProcess(), a_moduleHandle, &moduleInfo, sizeof(moduleInfo))) return {};
 		auto base = reinterpret_cast<std::uintptr_t>(moduleInfo.lpBaseOfDll);
 		std::size_t size = moduleInfo.SizeOfImage;
 

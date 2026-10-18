@@ -30,6 +30,8 @@ namespace IUI
 
 		void LogMembersOf(const RE::GFxValue& a_value) const
 		{
+			const auto log=spdlog::default_logger();
+			if (!log || !log->should_log(logLevel)) return;
 			logger::at_level(logLevel, "{}: {}", a_value.ToString().c_str(), GFxValueTypeToString(a_value.GetType()));
 			if (a_value.IsObject())
 			{
@@ -59,6 +61,7 @@ namespace IUI
 
 		void Visit(const char* a_name, const RE::GFxValue& a_value) override
 		{
+			if (!a_name) return;
 			std::string_view name = a_name;
 			if (name != "PlayReverse" && name != "PlayForward")
 			{
@@ -74,6 +77,8 @@ namespace IUI
 
 		void LogElementsOf(const RE::GFxValue& a_value) const
 		{
+			const auto log=spdlog::default_logger();
+			if (!log || !log->should_log(logLevel)) return;
 			logger::at_level(logLevel, "{}: {}", a_value.ToString().c_str(), GFxValueTypeToString(a_value.GetType()));
 			if (a_value.IsArray())
 			{

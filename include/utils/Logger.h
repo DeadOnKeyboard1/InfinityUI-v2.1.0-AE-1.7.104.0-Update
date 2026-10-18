@@ -25,7 +25,10 @@ namespace SKSE::log
 
 		std::filesystem::path path = knownPath.get();
 		path /= "My Games";
-		path /= std::filesystem::exists("steam_api64.dll") ? "Skyrim Special Edition" : "Skyrim Special Edition GOG";
+		std::error_code error;
+		const auto steam=std::filesystem::exists("steam_api64.dll",error);
+		if (error) return std::nullopt;
+		path /= steam ? "Skyrim Special Edition" : "Skyrim Special Edition GOG";
 		path /= "SKSE"sv;
 		return path;
 	}
@@ -39,7 +42,14 @@ namespace SKSE::log
 
 		std::filesystem::path path = *logDir / a_log_name;
 		path += ".log";
-		std::shared_ptr<spdlog::logger> log = spdlog::basic_logger_mt("global log", path.string(), true);
+		std::shared_ptr<spdlog::logger> log;
+		try {
+			log = spdlog::basic_logger_mt("global log", path.string(), true);
+		} catch (const spdlog::spdlog_ex&) {
+			return false;
+		} catch (const std::filesystem::filesystem_error&) {
+			return false;
+		}
 
 		spdlog::set_default_logger(std::move(log));
 

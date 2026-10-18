@@ -245,7 +245,7 @@ namespace RE
 			bool          SetArraySize(void* a_data, std::uint32_t a_size);
 			bool          GetElement(void* a_data, std::uint32_t a_idx, GFxValue* a_val) const;
 			bool          SetElement(void* a_data, std::uint32_t a_idx, const GFxValue& a_val);
-			void          VisitElements(void* a_data, ArrVisitor* a_visitor, std::uint32_t a_idx, const GFxValue& a_val) const;
+			void          VisitElements(void* a_data, ArrVisitor* a_visitor, std::uint32_t a_idx, std::int32_t a_count) const;
 			bool          PushBack(void* a_data, const GFxValue& a_value);
 			bool          RemoveElements(void* a_data, std::uint32_t a_idx, std::int32_t a_count);
 
@@ -260,6 +260,7 @@ namespace RE
 			bool GotoAndPlay(void* a_data, std::uint32_t a_frame, bool a_stop);
 
 			bool IsSameContext(const ObjectInterface* a_rhs) const;
+			GFxMovieRoot* GetMovieRoot() const noexcept { return _movieRoot; }
 
 			void ToString(GString* pstr, const GFxValue& thisVal) const;
 
@@ -376,7 +377,7 @@ namespace RE
 		bool                        SetArraySize(std::uint32_t a_size);
 		bool                        GetElement(std::uint32_t a_idx, GFxValue* a_val) const;
 		bool                        SetElement(std::uint32_t a_idx, const GFxValue& a_val);
-		void                        VisitElements(ArrayVisitor* a_visitor, std::uint32_t a_idx, std::int16_t a_count = -1) const;
+		void                        VisitElements(ArrayVisitor* a_visitor, std::uint32_t a_idx, std::int32_t a_count = -1) const;
 		void                        VisitElements(ArrayVisitor* a_visitor) const;
 		bool                        PushBack(const GFxValue& a_val);
 		bool                        RemoveElements(std::uint32_t a_idx, std::int32_t a_count = -1);

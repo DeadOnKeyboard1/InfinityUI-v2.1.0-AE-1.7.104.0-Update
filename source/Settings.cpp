@@ -1,6 +1,7 @@
 #include "Settings.h"
 
 #include "utils/INISettingCollection.h"
+#include "ValuePolicy.h"
 
 namespace settings
 {
@@ -22,7 +23,12 @@ namespace settings
 
 		{
 			using namespace debug;
-			logLevel = static_cast<logger::level>(iniSettingCollection->GetSetting<std::uint32_t>("uLogLevel:Debug"));
+			const auto value = iniSettingCollection->GetSetting<std::uint32_t>("uLogLevel:Debug");
+			if (IUI::ValidLogLevel(value, static_cast<std::uint32_t>(logger::level::off))) {
+				logLevel = static_cast<logger::level>(value);
+			} else {
+				logger::warn("Invalid uLogLevel:Debug; retaining the default log level");
+			}
 		}
 	}
 }

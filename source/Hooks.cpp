@@ -9,13 +9,15 @@ namespace hooks
 	void PatchGFxMovie(RE::GFxMovieRoot* a_movieRoot, float a_deltaT, std::uint32_t a_frameCatchUpCount, RE::IMenu* a_menu)
 	{
 		a_movieRoot->Advance(a_deltaT, a_frameCatchUpCount);
+		const auto definition=a_movieRoot->GetMovieDef();
+		if (!a_menu || !definition || !definition->GetFileURL()) return;
 
 		IUI::GFxMoviePatcher moviePatcher{ a_menu, a_movieRoot };
 
 		int loadedInstancesCount = moviePatcher.LoadInstancePatches();
 
 
-		const char* movieRootFileUrl = a_movieRoot->GetMovieDef()->GetFileURL();
+		const auto movieRootFileUrl = moviePatcher.MovieName();
 
 		if (loadedInstancesCount) 
 		{
@@ -33,9 +35,9 @@ namespace hooks
 		//}
 	}
 
-	void InitExtensionsAndNotify(RE::GFxMovieRoot* a_movieRoot, const char* a_methodName, const char* a_argFmt, RE::IMenu* a_menu, va_list args)
+	void InitExtensionsAndNotify(RE::GFxMovieRoot* a_movieRoot, const char* a_methodName, const char* a_argFmt, RE::IMenu* a_menu)
 	{
-		GFxMovieRoot::InvokeArgs(a_movieRoot, a_methodName, a_argFmt, args);
+		GFxMovieRoot::Invoke(a_movieRoot, a_methodName, a_argFmt);
 
 		//if (IUI::g_moviePatchersList.contains(a_movieRoot))
 		//{

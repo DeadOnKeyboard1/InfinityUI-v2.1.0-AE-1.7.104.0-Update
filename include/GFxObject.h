@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RE/G/GFxMovieView.h"
+#include "RE/G/GFxMovieRoot.h"
 #include "RE/G/GFxValue.h"
 
 namespace IUI
@@ -12,6 +12,7 @@ namespace IUI
 		template <typename... Args>
 		GFxObject(RE::GFxMovieView* a_movieView, const char* a_className, Args&&... args)
 		{
+			if (!a_movieView) return;
 			std::array<RE::GFxValue, sizeof...(Args)> gfxArgs{ std::forward<Args>(args)... };
 
 			a_movieView->CreateObject(this, a_className, sizeof...(Args) ? &gfxArgs[0] : nullptr, sizeof...(Args));
@@ -25,8 +26,9 @@ namespace IUI
 		static GFxObject GetFrom(RE::GFxMovieView* a_movieView, const std::string_view& a_pathToObject)
 		{
 			RE::GFxValue object;
-
-			a_movieView->GetVariable(&object, a_pathToObject.data());
+			if (!a_movieView) return object;
+			const std::string path(a_pathToObject);
+			a_movieView->GetVariable(&object, path.c_str());
 
 			assert(object.IsObject());
 
@@ -36,6 +38,7 @@ namespace IUI
 		template <typename... Args>
 		GFxObject(RE::GFxMovieView* a_movieView, Args&&... args)
 		{
+			if (!a_movieView) return;
 			std::array<RE::GFxValue, sizeof...(Args)> gfxArgs{ std::forward<Args>(args)... };
 
 			a_movieView->CreateObject(this, nullptr, sizeof...(Args) ? &gfxArgs[0] : nullptr, sizeof...(Args));
@@ -53,19 +56,23 @@ namespace IUI
 
 		RE::GFxMovieView* GetMovieView()
 		{
-			return **reinterpret_cast<RE::GFxMovieView***>(static_cast<RE::GFxValue*>(this));
+			return _objectInterface ? _objectInterface->GetMovieRoot() : nullptr;
 		}
 
 		RE::GFxValue GetMember(const std::string_view& a_memberName) const
 		{
 			RE::GFxValue value;
-			RE::GFxValue::GetMember(a_memberName.data(), &value);
+			if (!IsObject() || !_objectInterface) return value;
+			const std::string name(a_memberName);
+			RE::GFxValue::GetMember(name.c_str(), &value);
 			return value;
 		}
 	 
 		bool SetMember(const std::string_view& a_memberName, const RE::GFxValue& a_value)
 		{
-			return RE::GFxValue::SetMember(a_memberName.data(), a_value);
+			if (!IsObject() || !_objectInterface) return false;
+			const std::string name(a_memberName);
+			return RE::GFxValue::SetMember(name.c_str(), a_value);
 		}
 
 		template <typename... Args>
@@ -79,9 +86,11 @@ namespace IUI
 		template <typename... Args>
 		bool Invoke(const std::string_view& a_functionName, RE::GFxValue* a_result, Args&&... args)
 		{
+			if (!IsObject() || !_objectInterface) return false;
+			const std::string name(a_functionName);
 			std::array<RE::GFxValue, sizeof...(Args)> gfxArgs{ std::forward<Args>(args)... };
 
-			if (RE::GFxValue::Invoke(a_functionName.data(), a_result,
+			if (RE::GFxValue::Invoke(name.c_str(), a_result,
 									 sizeof...(Args) ? &gfxArgs[0] : nullptr, sizeof...(Args)))
 			{
 				return true;

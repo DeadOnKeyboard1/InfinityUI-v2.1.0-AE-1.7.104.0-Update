@@ -9,7 +9,7 @@ namespace IUI::API
 	template <typename MessageT> requires valid_message<MessageT>
 	void DispatchMessage(const MessageT& a_message)
 	{
-		SKSE::GetMessagingInterface()->Dispatch(MessageT::type, const_cast<MessageT*>(&a_message),
+		if (const auto messaging=SKSE::GetMessagingInterface()) messaging->Dispatch(MessageT::type, const_cast<MessageT*>(&a_message),
 												static_cast<std::uint32_t>(sizeof(MessageT)), nullptr);
 	}
 }

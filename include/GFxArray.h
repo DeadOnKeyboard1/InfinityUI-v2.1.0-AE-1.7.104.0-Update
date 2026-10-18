@@ -1,7 +1,9 @@
 #pragma once
 
-#include "RE/G/GFxMovieView.h"
+#include "RE/G/GFxMovieRoot.h"
 #include "RE/G/GFxValue.h"
+#include <algorithm>
+#include <limits>
 
 namespace IUI
 {
@@ -13,7 +15,9 @@ namespace IUI
 		{
 			RE::GFxValue array;
 
-			a_movieView->GetVariable(&array, a_pathToArray.data());
+			if (!a_movieView) return array;
+			const std::string path(a_pathToArray);
+			a_movieView->GetVariable(&array, path.c_str());
 
 			assert(array.IsArray());
 
@@ -22,6 +26,7 @@ namespace IUI
 
 		GFxArray(RE::GFxMovieView* a_movieView)
 		{
+			if (!a_movieView) return;
 			a_movieView->CreateArray(this);
 
 			assert(GetMovieView() == a_movieView);
@@ -37,28 +42,32 @@ namespace IUI
 
 		RE::GFxMovieView* GetMovieView()
 		{
-			return **reinterpret_cast<RE::GFxMovieView***>(static_cast<RE::GFxValue*>(this));
+			return _objectInterface ? _objectInterface->GetMovieRoot() : nullptr;
 		}
 
 		RE::GFxValue GetElement(std::uint32_t a_index) const
 		{
 			RE::GFxValue value;
+			if (!IsArray() || !_objectInterface || a_index>=GetArraySize()) return value;
 			RE::GFxValue::GetElement(a_index, &value);
 			return value;
 		}
 
 		bool SetElement(std::uint32_t a_index, const RE::GFxValue& a_value)
 		{
-			return RE::GFxValue::SetElement(a_index, &a_value);
+			return IsArray() && _objectInterface && RE::GFxValue::SetElement(a_index, a_value);
 		}
 
 		std::int32_t FindElement(const RE::GFxValue& a_value)
 		{
-			for (std::uint32_t i = 0; i < GetArraySize(); i++) 
+			if (!IsArray() || !_objectInterface) return -1;
+			const auto size=std::min(GetArraySize(), static_cast<std::uint32_t>(std::numeric_limits<std::int32_t>::max())+1U);
+			for (std::uint32_t i = 0; i < size; i++)
 			{
-				if (GetElement(i) == a_value)
+				RE::GFxValue element;
+				if (RE::GFxValue::GetElement(i, &element) && element == a_value)
 				{
-					return i;
+					return static_cast<std::int32_t>(i);
 				}
 			}
 

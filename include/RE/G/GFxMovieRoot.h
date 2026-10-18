@@ -51,7 +51,7 @@ namespace RE
 			// Unknown
 		};
 
-		enum class Flag
+		enum class Flag : std::uint32_t
 		{
 			kNone = 0,
 			kViewportSet = 1 << 0,

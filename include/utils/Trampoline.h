@@ -145,8 +145,9 @@ namespace hooks
 
 			std::size_t patternLength = (str.length() + 1) / 3;	 // 2/3 useful chars (1 space between byte chars)
 			auto pattern = REL::make_pattern<str>();
+			if (!base || !patternLength || patternLength>size) return 0;
 
-			for (std::size_t offset = 0; offset < size - patternLength; offset++) {
+			for (std::size_t offset = 0; offset <= size - patternLength; offset++) {
 				std::uintptr_t addr = base + offset;
 
 				if (pattern.match(addr)) {

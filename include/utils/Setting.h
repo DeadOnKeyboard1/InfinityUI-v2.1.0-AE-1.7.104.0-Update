@@ -46,7 +46,7 @@ namespace utils
 						return;
 					}
 				} else if constexpr (std::is_same_v<T, int>) {
-					if (GetType() == Type::kSignedInteger) {
+					if (GetType() == Type::kInteger) {
 						data.i = a_data;
 
 						return;
@@ -91,7 +91,7 @@ namespace utils
 
 		// members
 		RE::Setting::Data data{};  // 08
-		char* name;				   // 10
+		char* name{};				   // 10
 	};
 	static_assert(sizeof(Setting) == sizeof(RE::Setting));
 

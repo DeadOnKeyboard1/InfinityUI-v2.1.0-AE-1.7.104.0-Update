@@ -19,16 +19,16 @@ namespace utils
 
 	bool INISettingCollection::ReadFromFile(std::string_view a_fileName)
 	{
-		std::filesystem::path iniPath = std::filesystem::current_path().append("Data\\SKSE\\Plugins").append(a_fileName);
-
-		// Reference: decompiled source code in 1.5.97
-		if (iniPath.string().c_str()) {
-			if (iniPath.string().c_str() != subKey) {
-				strcpy_s(subKey, iniPath.string().c_str());
-			}
-		} else {
-			subKey[0] = '\0';
-		}
+		std::error_code error;
+		auto iniPath=std::filesystem::current_path(error);
+		if (error) return false;
+		iniPath/="Data/SKSE/Plugins";
+		iniPath/=a_fileName;
+		std::string path;
+		try { path=iniPath.string(); }
+		catch (const std::filesystem::filesystem_error&) { return false; }
+		if (path.size()>=sizeof(subKey)) return false;
+		if (strcpy_s(subKey,path.c_str())!=0) return false;
 
 		if (_this()->OpenHandle(false)) {
 			_this()->ReadAllSettings();
